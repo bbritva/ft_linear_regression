@@ -85,11 +85,8 @@ def gradient_descent(x, y, w_in, b_in, alpha, num_iters):
       b : (scalar)                Updated value of parameter of the model after
           running gradient descent
     """
-    
-    m = len(x)
-    
-    J_history = []
     w_history = []
+    b_history = []
     w = copy.deepcopy(w_in)  #avoid modifying global w within function
     b = b_in
     
@@ -102,17 +99,17 @@ def gradient_descent(x, y, w_in, b_in, alpha, num_iters):
         w = w - alpha * dj_dw               
         b = b - alpha * dj_db               
 
-        # Save cost J at each iteration
-        if i < 100000:      # prevent resource exhaustion 
-            cost =  compute_cost(x, y, w, b)
-            J_history.append(cost)
-
-        # Print cost every at intervals 10 times or as many iterations if < 10
-        if i% math.ceil(num_iters/10) == 0:
+        # Print progress every at intervals 10 times or as many iterations if < 10
+        if i % math.ceil(num_iters/10) == 0:
             w_history.append(w)
-            print(f"Iteration {i:4}: Cost {float(J_history[-1]):8.2f}, w = {w}, b = {b}")
+            b_history.append(b)
+            print(f"Iteration {i:4}: w = {w}, b = {b}")
         
-    return w, b, J_history, w_history #return w and J,w history for graphing
+        # check if step is too low
+        if (w - w_in) ** 2 < 0.001 * w and (b - b_in) ** 2 < 0.001 * b:
+            break
+        
+    return w, b, w_history, b_history #return w, b and thiers history
 
 if __name__ == "__main__":
     data = read_data("./data.csv")
@@ -120,39 +117,16 @@ if __name__ == "__main__":
     data["price"] /= 10000
     # Create a scatter plot of the data. To change the markers to red "x",
     # we used the 'marker' and 'c' parameters
-    plt.scatter(data["km"], data["price"], marker='x', c='r') 
+    plt.scatter(data["km"] * 10, data["price"] * 10, marker='x', c='r') 
 
-    # Set the title
+    # Plotting
     plt.title("Price vs. Mileage")
-    # Set the y-axis label
-    plt.ylabel('Price in $10,000')
-    # Set the x-axis label
-    plt.xlabel('Mileage in 10,000km')
+    plt.ylabel('Price in $1,000')
+    plt.xlabel('Mileage in 1,000km')
     plt.show()
 
-
-    # w, b, J_history, w_history = gradient_descent()
     # PREDICT
-    initial_w = 0
-    initial_b = 1
-
-    cost = compute_cost(data["km"], data["price"], initial_w, initial_b)
-    print(type(cost))
-    print(f'Cost at initial w: {cost:.3f}')
     m = data.shape[0]
-    # Compute and display gradient with w initialized to zeroes
-    initial_w = 0
-    initial_b = 0
-
-    tmp_dj_dw, tmp_dj_db = compute_gradient(data["km"], data["price"], initial_w, initial_b)
-    print('Gradient at initial w, b (zeros):', tmp_dj_dw, tmp_dj_db)
-
-    test_w = 0.2
-    test_b = 0.2
-    tmp_dj_dw, tmp_dj_db = compute_gradient(data["km"], data["price"], test_w, test_b)
-
-    print('Gradient at test w, b:', tmp_dj_dw, tmp_dj_db)
-
     initial_w = 0.
     initial_b = 0.
 
@@ -160,24 +134,22 @@ if __name__ == "__main__":
     iterations = 15000
     alpha = 0.01
 
-    w,b,_,_ = gradient_descent(data["km"], data["price"], initial_w, initial_b, alpha, iterations)
+    w, b, w_hist, b_hist = gradient_descent(data["km"], data["price"], initial_w, initial_b, alpha, iterations)
     print("w,b found by gradient descent:", w, b)
 
     predicted = np.zeros(m)
     for i in range(m):
         predicted[i] = w * data["km"][i] + b
 
-
-    plt.plot(data["km"], predicted, c = "b")
-
-    # Create a scatter plot of the data. 
-    plt.scatter(data["km"], data["price"], marker='x', c='r') 
-
-    # Set the title
+    # Plotting
+    plt.plot(data["km"] * 10, predicted * 10, c = "b")
+    plt.scatter(data["km"] * 10, data["price"] * 10, marker='x', c='r') 
     plt.title("Price vs. Mileage")
-    # Set the y-axis label
-    plt.ylabel('Price in $10,000')
-    # Set the x-axis label
-    plt.xlabel('Mileage in 10,000km')
+    plt.ylabel('Price in $1,000')
+    plt.xlabel('Mileage in 1,000km')
     plt.show()
+    
+    # Save result
+    
+
 
