@@ -27,8 +27,8 @@ def compute_cost(x, y, w, b):
     Computes the cost function for linear regression.
     
     Args:
-        x (ndarray): Shape (m,) Input to the model (Population of cities) 
-        y (ndarray): Shape (m,) Label (Actual profits for the cities)
+        x (ndarray): Shape (m,) Input to the model
+        y (ndarray): Shape (m,) Label
         w, b (scalar): Parameters of the model
     
     Returns
@@ -48,13 +48,13 @@ def compute_gradient(x, y, w, b):
     """
     Computes the gradient for linear regression 
     Args:
-      x (ndarray): Shape (m,) Input to the model (Population of cities) 
-      y (ndarray): Shape (m,) Label (Actual profits for the cities)
-      w, b (scalar): Parameters of the model  
+      x  - Mileage
+      y  - Price
+      w, b - Parameters of the model  
     Returns
       dj_dw (scalar): The gradient of the cost w.r.t. the parameters w
       dj_db (scalar): The gradient of the cost w.r.t. the parameter b     
-     """
+    """
     
     m = x.shape[0]
     dj_dw = 0
@@ -110,7 +110,7 @@ def gradient_descent(x, y, w_in, b_in, alpha, num_iters):
         # Print cost every at intervals 10 times or as many iterations if < 10
         if i% math.ceil(num_iters/10) == 0:
             w_history.append(w)
-            print(f"Iteration {i:4}: Cost {float(J_history[-1]):8.2f}   ")
+            print(f"Iteration {i:4}: Cost {float(J_history[-1]):8.2f}, w = {w}, b = {b}")
         
     return w, b, J_history, w_history #return w and J,w history for graphing
 
@@ -123,17 +123,17 @@ if __name__ == "__main__":
     plt.scatter(data["km"], data["price"], marker='x', c='r') 
 
     # Set the title
-    plt.title("Profits vs. Population per city")
+    plt.title("Price vs. Mileage")
     # Set the y-axis label
-    plt.ylabel('Profit in $10,000')
+    plt.ylabel('Price in $10,000')
     # Set the x-axis label
-    plt.xlabel('Population of City in 10,000s')
+    plt.xlabel('Mileage in 10,000km')
     plt.show()
 
 
     # w, b, J_history, w_history = gradient_descent()
     # PREDICT
-    initial_w = 2
+    initial_w = 0
     initial_b = 1
 
     cost = compute_cost(data["km"], data["price"], initial_w, initial_b)
@@ -156,9 +156,9 @@ if __name__ == "__main__":
     initial_w = 0.
     initial_b = 0.
 
-    # some gradient descent settings
-    iterations = 1500
-    alpha = 0.001
+    # gradient descent settings
+    iterations = 15000
+    alpha = 0.01
 
     w,b,_,_ = gradient_descent(data["km"], data["price"], initial_w, initial_b, alpha, iterations)
     print("w,b found by gradient descent:", w, b)
@@ -174,10 +174,10 @@ if __name__ == "__main__":
     plt.scatter(data["km"], data["price"], marker='x', c='r') 
 
     # Set the title
-    plt.title("Profits vs. Population per city")
+    plt.title("Price vs. Mileage")
     # Set the y-axis label
-    plt.ylabel('Profit in $10,000')
+    plt.ylabel('Price in $10,000')
     # Set the x-axis label
-    plt.xlabel('Population of City in 10,000s')
+    plt.xlabel('Mileage in 10,000km')
     plt.show()
 
