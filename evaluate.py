@@ -43,6 +43,20 @@ def mSqrtErr(data, w, b, k_norm):
     return math.sqrt(mSqrErr(data, w, b, k_norm))
 
 
+@_guard_
+def r2score(data, w, b, k_norm):
+    rss = 0
+    m = data.shape[0]
+    for i in range(m):
+        price = w * data['km'][i] + b * k_norm
+        rss += (price - data['price'][i]) ** 2
+    tss = 0
+    avg = np.average(data['price'])
+    for i in range(m):
+        tss += (avg - data['price'][i]) ** 2
+    return 1 - rss / tss
+
+
 if __name__ == "__main__":
     data = None
     predicted = None
@@ -62,3 +76,4 @@ if __name__ == "__main__":
         print(f"Mean Absolute Error: ${mAbsErr(data, w, b, k_norm)}")
         print(f"Mean Squared Error: {mSqrErr(data, w, b, k_norm)}($**2)")
         print(f"Root Mean Squared Error: ${mSqrtErr(data, w, b, k_norm)}")
+        print(f"R2 Score: {r2score(data, w, b, k_norm)}%")

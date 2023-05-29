@@ -121,6 +121,7 @@ def main(argv):
 
     # Plotting
     if len(argv) > 1 and argv[1] == "-B":
+        plt.figure(figsize=(15,10))
         plt.scatter(data["km"] * k_norm / 1000, data["price"] *  k_norm / 1000, marker='x', c='r') 
         plt.title("Price vs. Mileage")
         plt.ylabel(f'Price in ${k_norm / 10}')
@@ -146,6 +147,7 @@ def main(argv):
 
     # Plotting
     if len(sys.argv) > 1 and sys.argv[1] == "-B":
+        plt.figure(figsize=(15,10))
         plt.plot(data["km"] * 10, predicted * 10, c = "b")
         plt.scatter(data["km"] * k_norm / 1000, data["price"] *  k_norm / 1000, marker='x', c='r') 
         plt.title("Price vs. Mileage")
