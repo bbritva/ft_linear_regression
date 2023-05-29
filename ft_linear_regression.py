@@ -68,7 +68,7 @@ def compute_gradient(x, y, w, b):
     return dj_dw / m, dj_db / m
 
 @_guard_
-def gradient_descent(x, y, w_in, b_in, cost_function, gradient_function, alpha, num_iters): 
+def gradient_descent(x, y, w_in, b_in, alpha, num_iters): 
     """
     Performs batch gradient descent to learn theta. Updates theta by taking 
     num_iters gradient steps with learning rate alpha
@@ -77,8 +77,6 @@ def gradient_descent(x, y, w_in, b_in, cost_function, gradient_function, alpha, 
       x :    (ndarray): Shape (m,)
       y :    (ndarray): Shape (m,)
       w_in, b_in : (scalar) Initial values of parameters of the model
-      cost_function: function to compute cost
-      gradient_function: function to compute the gradient
       alpha : (float) Learning rate
       num_iters : (int) number of iterations to run gradient descent
     Returns
@@ -98,7 +96,7 @@ def gradient_descent(x, y, w_in, b_in, cost_function, gradient_function, alpha, 
     for i in range(num_iters):
 
         # Calculate the gradient and update the parameters
-        dj_dw, dj_db = gradient_function(x, y, w, b )  
+        dj_dw, dj_db = compute_gradient(x, y, w, b )  
 
         # Update Parameters using w, b, alpha and gradient
         w = w - alpha * dj_dw               
@@ -106,7 +104,7 @@ def gradient_descent(x, y, w_in, b_in, cost_function, gradient_function, alpha, 
 
         # Save cost J at each iteration
         if i<100000:      # prevent resource exhaustion 
-            cost =  cost_function(x, y, w, b)
+            cost =  compute_cost(x, y, w, b)
             J_history.append(cost)
 
         # Print cost every at intervals 10 times or as many iterations if < 10
@@ -118,6 +116,8 @@ def gradient_descent(x, y, w_in, b_in, cost_function, gradient_function, alpha, 
 
 if __name__ == "__main__":
     data = read_data("./data.csv")
+    data["km"] /= 10000
+    data["price"] /= 10000
     # Create a scatter plot of the data. To change the markers to red "x",
     # we used the 'marker' and 'c' parameters
     plt.scatter(data["km"], data["price"], marker='x', c='r') 
@@ -133,11 +133,37 @@ if __name__ == "__main__":
 
     # w, b, J_history, w_history = gradient_descent()
     # PREDICT
-    w = 1
-    b = 1
-    m = data.shape[0]
-    predicted = np.zeros(m)
+    initial_w = 2
+    initial_b = 1
 
+    cost = compute_cost(data["km"], data["price"], initial_w, initial_b)
+    print(type(cost))
+    print(f'Cost at initial w: {cost:.3f}')
+    m = data.shape[0]
+    # Compute and display gradient with w initialized to zeroes
+    initial_w = 0
+    initial_b = 0
+
+    tmp_dj_dw, tmp_dj_db = compute_gradient(data["km"], data["price"], initial_w, initial_b)
+    print('Gradient at initial w, b (zeros):', tmp_dj_dw, tmp_dj_db)
+
+    test_w = 0.2
+    test_b = 0.2
+    tmp_dj_dw, tmp_dj_db = compute_gradient(data["km"], data["price"], test_w, test_b)
+
+    print('Gradient at test w, b:', tmp_dj_dw, tmp_dj_db)
+
+    initial_w = 0.
+    initial_b = 0.
+
+    # some gradient descent settings
+    iterations = 1500
+    alpha = 0.001
+
+    w,b,_,_ = gradient_descent(data["km"], data["price"], initial_w, initial_b, alpha, iterations)
+    print("w,b found by gradient descent:", w, b)
+
+    predicted = np.zeros(m)
     for i in range(m):
         predicted[i] = w * data["km"][i] + b
 
