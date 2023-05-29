@@ -11,7 +11,7 @@ def _guard_(func):
         try:
             return(func(*args, **kwargs))
         except Exception as e:
-            print("exception", e) 
+            # print("exception", e) 
             return None
     return wrapper
 
@@ -112,7 +112,8 @@ def gradient_descent(x, y, w_in, b_in, alpha, num_iters):
         
     return w, b, w_history, b_history #return w, b and thiers history
 
-if __name__ == "__main__":
+@_guard_
+def main(argv): 
     data = read_data("./data.csv")
     data["km"] /= 10000
     data["price"] /= 10000
@@ -121,7 +122,7 @@ if __name__ == "__main__":
     plt.scatter(data["km"] * 10, data["price"] * 10, marker='x', c='r') 
 
     # Plotting
-    if len(sys.argv) > 1 and sys.argv[1] == "-b":
+    if len(argv) > 1 and argv[1] == "-B":
         plt.title("Price vs. Mileage")
         plt.ylabel('Price in $1,000')
         plt.xlabel('Mileage in 1,000km')
@@ -145,16 +146,18 @@ if __name__ == "__main__":
         predicted[i] = w * data["km"][i] + b
 
     # Plotting
-    if len(sys.argv) > 1 and sys.argv[1] == "-b":
+    if len(sys.argv) > 1 and sys.argv[1] == "-B":
         plt.plot(data["km"] * 10, predicted * 10, c = "b")
         plt.scatter(data["km"] * 10, data["price"] * 10, marker='x', c='r') 
         plt.title("Price vs. Mileage")
         plt.ylabel('Price in $1,000')
         plt.xlabel('Mileage in 1,000km')
+        plt.grid()
         plt.show()
     
     # Save result
     np.savez("predict_res", w=w, b=b, w_hist=w_hist, b_hist=b_hist)
 
-
+if __name__ == "__main__":
+    main(sys.argv)
 
