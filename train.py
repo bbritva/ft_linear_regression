@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import copy
 import math
+import sys
 
 
 def _guard_(func):
@@ -120,10 +121,12 @@ if __name__ == "__main__":
     plt.scatter(data["km"] * 10, data["price"] * 10, marker='x', c='r') 
 
     # Plotting
-    plt.title("Price vs. Mileage")
-    plt.ylabel('Price in $1,000')
-    plt.xlabel('Mileage in 1,000km')
-    plt.show()
+    if len(sys.argv) > 1 and sys.argv[1] == "-b":
+        plt.title("Price vs. Mileage")
+        plt.ylabel('Price in $1,000')
+        plt.xlabel('Mileage in 1,000km')
+        plt.grid()
+        plt.show()
 
     # PREDICT
     m = data.shape[0]
@@ -142,12 +145,13 @@ if __name__ == "__main__":
         predicted[i] = w * data["km"][i] + b
 
     # Plotting
-    plt.plot(data["km"] * 10, predicted * 10, c = "b")
-    plt.scatter(data["km"] * 10, data["price"] * 10, marker='x', c='r') 
-    plt.title("Price vs. Mileage")
-    plt.ylabel('Price in $1,000')
-    plt.xlabel('Mileage in 1,000km')
-    plt.show()
+    if len(sys.argv) > 1 and sys.argv[1] == "-b":
+        plt.plot(data["km"] * 10, predicted * 10, c = "b")
+        plt.scatter(data["km"] * 10, data["price"] * 10, marker='x', c='r') 
+        plt.title("Price vs. Mileage")
+        plt.ylabel('Price in $1,000')
+        plt.xlabel('Mileage in 1,000km')
+        plt.show()
     
     # Save result
     np.savez("predict_res", w=w, b=b, w_hist=w_hist, b_hist=b_hist)
