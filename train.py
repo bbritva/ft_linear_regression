@@ -11,7 +11,7 @@ def _guard_(func):
         try:
             return(func(*args, **kwargs))
         except Exception as e:
-            # print("exception", e) 
+            print("exception", e) 
             return None
     return wrapper
 
@@ -115,6 +115,8 @@ def gradient_descent(x, y, w_in, b_in, alpha, num_iters):
 @_guard_
 def main(argv): 
     data = read_data("./data.csv")
+    if data is None:
+        return
     k_norm = 10000
     data["km"] /= k_norm
     data["price"] /= k_norm
