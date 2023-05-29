@@ -150,6 +150,7 @@ if __name__ == "__main__":
     plt.show()
     
     # Save result
-    
+    np.savez("predict_res", w=w, b=b, w_hist=w_hist, b_hist=b_hist)
+
 
 
