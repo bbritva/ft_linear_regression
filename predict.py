@@ -27,8 +27,7 @@ if __name__ == "__main__":
             print("Wrong input")
             continue
         break
-    mileage /= 10000
-    price = (data['w']*mileage + data['b']) * 10000 if data else 0
+    price = data['w'] * mileage + data['b'] * data["k_norm"] if data else 0
     if price >= 0:
         print(f"Predicted price is {price}")
     else:

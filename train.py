@@ -115,17 +115,16 @@ def gradient_descent(x, y, w_in, b_in, alpha, num_iters):
 @_guard_
 def main(argv): 
     data = read_data("./data.csv")
-    data["km"] /= 10000
-    data["price"] /= 10000
-    # Create a scatter plot of the data. To change the markers to red "x",
-    # we used the 'marker' and 'c' parameters
-    plt.scatter(data["km"] * 10, data["price"] * 10, marker='x', c='r') 
+    k_norm = 10000
+    data["km"] /= k_norm
+    data["price"] /= k_norm
 
     # Plotting
     if len(argv) > 1 and argv[1] == "-B":
+        plt.scatter(data["km"] * k_norm / 1000, data["price"] *  k_norm / 1000, marker='x', c='r') 
         plt.title("Price vs. Mileage")
-        plt.ylabel('Price in $1,000')
-        plt.xlabel('Mileage in 1,000km')
+        plt.ylabel(f'Price in ${k_norm / 10}')
+        plt.xlabel(f'Mileage in {k_norm / 10}km')
         plt.grid()
         plt.show()
 
@@ -148,15 +147,15 @@ def main(argv):
     # Plotting
     if len(sys.argv) > 1 and sys.argv[1] == "-B":
         plt.plot(data["km"] * 10, predicted * 10, c = "b")
-        plt.scatter(data["km"] * 10, data["price"] * 10, marker='x', c='r') 
+        plt.scatter(data["km"] * k_norm / 1000, data["price"] *  k_norm / 1000, marker='x', c='r') 
         plt.title("Price vs. Mileage")
-        plt.ylabel('Price in $1,000')
-        plt.xlabel('Mileage in 1,000km')
+        plt.ylabel(f'Price in ${k_norm / 10}')
+        plt.xlabel(f'Mileage in {k_norm / 10}km')
         plt.grid()
         plt.show()
     
     # Save result
-    np.savez("predict_res", w=w, b=b, w_hist=w_hist, b_hist=b_hist)
+    np.savez("predict_res", w=w, b=b, w_hist=w_hist, b_hist=b_hist, k_norm=k_norm)
 
 if __name__ == "__main__":
     main(sys.argv)
